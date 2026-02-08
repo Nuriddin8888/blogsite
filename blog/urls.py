@@ -6,5 +6,5 @@ urlpatterns = [
     path('about/', about_page, name="about"),
     path('blog/', blog_page, name="blog"),
     path('contact/', contact_page, name="contact"),
-    path('single/', single_page, name="single"),
+    path('single/<int:id>/', single_page, name="single"),
 ]
