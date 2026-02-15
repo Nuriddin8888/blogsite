@@ -43,13 +43,15 @@
     <!-- Blog Detail Start -->
     <div class="container py-5 px-2 bg-white">
         <div class="row px-4">
-            {% for article_more in article_more%}
+            {% for article_more in article_mores %}
             <div class="col-12">
                 <img class="img-fluid mb-4" src="{{ article_more.photo.url }}" alt="Image">
                 <h2 class="mb-3 font-weight-bold">{{ article_more.title }}</h2>
                 <div class="d-flex">
-                    <p class="mr-3 text-muted"><i class="fa fa-calendar-alt"></i> {{
-                        article_more.published_date }}</p>
+                    <p class="mr-3 text-muted">
+                        <i class="fa fa-calendar-alt"></i>
+                        {{ article_more.published_date|date:"d.m.Y H:i" }}
+                    </p>
                     <p class="mr-3 text-muted"><i class="fa fa-folder"></i> {{ article_more.category.title }}</p>
                     <p class="mr-3 text-muted"><i class="fa fa-comments"></i> 15 Comments</p>
                 </div>

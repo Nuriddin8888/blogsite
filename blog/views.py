@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse
 from .models import Person, About, CaruselBanner, Article, ArticleMore, Contact, Comment
+import requests
+from django.conf import settings
 # Create your views here.
 
 def my_profil(request):
@@ -15,7 +16,8 @@ def my_profil(request):
 
 def home_page(request):
     carusel = CaruselBanner.objects.all()
-    article = Article.objects.all()
+    article = Article.objects.all().order_by('-published_date')
+
     
     context = {
         'carusels': carusel[:3],
@@ -40,8 +42,43 @@ def blog_page(request):
 
 
 def contact_page(request):
-    return render(request, 'contact.html')
+    success_message = None
+    error_message = None
 
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+        email = request.POST.get("email", "").strip()
+        subject = request.POST.get("subject", "").strip()
+        message = request.POST.get("message", "").strip()
+
+        # ✅ backend validatsiya
+        if not name or not email or not subject or not message:
+            error_message = "Iltimos, barcha maydonlarni to'ldiring ❗"
+            return render(request, "contact.html", {
+                "success_message": success_message,
+                "error_message": error_message
+            })
+
+        text = (
+            "📩 Yangi kontakt xabari!\n\n"
+            f"👤 Ism: {name}\n"
+            f"📧 Email: {email}\n"
+            f"🧾 Mavzu: {subject}\n"
+            f"📝 Xabar:\n{message}"
+        )
+
+        url = f"https://api.telegram.org/bot{settings.TG_BOT_TOKEN}/sendMessage"
+        r = requests.post(url, data={"chat_id": settings.TG_CHAT_ID, "text": text}, timeout=10)
+
+        if r.status_code == 200:
+            success_message = "Xabaringiz yuborildi ✅"
+        else:
+            error_message = "Xabar yuborishda xatolik bo'ldi. Keyinroq urinib ko'ring ❗"
+
+    return render(request, "contact.html", {
+        "success_message": success_message,
+        "error_message": error_message
+    })
 
 
 def single_page(request, id):
@@ -72,7 +109,7 @@ def single_page(request, id):
     
     context = {
         'article': article,
-        'article_more': article_more,
+        'article_mores': article_more,
         'comment': comment,
         'comment_count': comment_count,
         'success_message': success_message,

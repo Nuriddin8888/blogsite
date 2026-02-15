@@ -129,3 +129,7 @@ MEDIA_ROOT = BASE_DIR / 'media/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+TG_BOT_TOKEN = "7171496599:AAEzLO-SIsvN-c-hWSbaAUupkalImZOm0Ig"
+TG_CHAT_ID = "1921911753"
